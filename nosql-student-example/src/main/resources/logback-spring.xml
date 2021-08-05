@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<springProfile name="local">
+		<property name="CONCURRENCY_API_LOG_PATH" value="../logs/concurrency"/>
+		<appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+			<layout class="ch.qos.logback.classic.PatternLayout">
+				<pattern>[%d{ dd-MM-yyyy HH:mm:ss.SSS }] [ %5p ] [%thread] [ %logger ] %msg%n</pattern>
+			</layout>
+		</appender>
+		<appender name="CONCURRENCY_API_LOGS_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${CONCURRENCY_API_LOG_PATH}/StudentApp.log</file>
+			<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+				<pattern>[%d{ dd-MM-yyyy HH:mm:ss.SSS }] [ %5p ] [%thread] [ %logger ] %msg%n</pattern>
+			</encoder>
+			<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<!-- rollover daily and when the file reaches 10 MegaBytes -->
+				<fileNamePattern>${CONCURRENCY_API_LOG_PATH}/archived/StudentApp-%d{dd-MM-yyyy HH:mm:ss}.%i.log</fileNamePattern>
+				<!-- each archived file, size max 10MB -->
+				<maxFileSize>500MB</maxFileSize>
+				<!-- total size of all archive files, if total size > 10GB, it will delete old archived file -->
+				<totalSizeCap>10GB</totalSizeCap>
+				<!-- 90 days to keep -->
+				<maxHistory>90</maxHistory>
+			</rollingPolicy>
+		</appender>
+		
+		<root level="info">
+			<appender-ref ref="Console"/>
+			<appender-ref ref="CONCURRENCY_API_LOGS_APPENDER"/>
+		</root>
+		
+		<logger name="com.oracle.nosql.spring.data" level="debug" additivity="false">
+		    <appender-ref ref="Console"/>
+			<appender-ref ref="CONCURRENCY_API_LOGS_APPENDER"/>
+		</logger>
+	</springProfile>
+</configuration>
